@@ -1,0 +1,44 @@
+Query Data:
+----
+
+{
+    "BathroomsTotal": 3,
+    "BedroomsTotal": 4,
+    "LivingArea": 3000,
+    "LotSize": 200000,
+    "YearBuilt": 2016,
+    "Pool_YN": 1
+}
+
+Train Data:
+----
+{
+	"BathroomsTotal": {
+		"0": 3,
+		"1": 2
+	},
+	"BedroomsTotal": {
+		"0": 4,
+		"1": 2
+	},
+	"LivingArea": {
+		"0": 3000,
+		"1": 2000
+	},
+	"LotSize": {
+		"0": 200000,
+		"1": 9000
+	},
+	"YearBuilt": {
+		"0": 2016,
+		"1": 2015
+	},
+	"Pool_YN": {
+		"0": 1,
+		"1": 0
+	},
+	"close_price": {
+		"0": 10000,
+		"1": 20000
+	}
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<!-- Special version of Bootstrap that only affects content wrapped in .bootstrap-iso -->
+<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css"/>
+
+<!-- Inline CSS based on choices in "Settings" tab -->
+<style>
+	.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form {
+		font-family: Arial, Helvetica, sans-serif;
+		color: black
+	}
+
+	.bootstrap-iso form button, .bootstrap-iso form button:hover {
+		color: white !important;
+	}
+
+	.asteriskField {
+		color: red;
+	}
+</style>
+
+<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+<div class="bootstrap-iso">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<h2>Calculation Engine</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<form method="post">
+					<div class="form-group ">
+						<label class="control-label requiredField" for="query">
+							Enter query json data
+							<span class="asteriskField">*</span>
+						</label>
+						<textarea class="form-control" cols="40" id="query" name="query"
+								  placeholder="Please follow below the link" rows="10"></textarea>
+						<span class="help-block" id="hint_query">
+							Sample :Please <a href="http://cbtcomply.com/VAL-CBT/query.txt" target="_blank">click here</a> to view file and use http://www.jsoneditoronline.org to view proper structure of json
+						</span>
+					</div>
+					<div class="form-group ">
+						<label class="control-label requiredField" for="trainData">
+							Enter train data
+							<span class="asteriskField">*</span>
+						</label>
+						<textarea class="form-control" cols="40" id="trainData" name="trainData"
+								  placeholder="Please follow below the link" rows="10"></textarea>
+						<span class="help-block" id="hint_trainData">
+							Sample: Please <a href="http://cbtcomply.com/VAL-CBT/trainData.txt" target="_blank">click here</a> to view file and use http://www.jsoneditoronline.org to view proper structure of json
+						</span>
+					</div>
+					<div class="form-group">
+						<label class="control-label requiredField" for="trainData">
+							Server to Pull Data From
+						</label>
+						<select name="server" id="server" class="form-control">
+							<option value="http://127.0.0.1:5000/">Localhost</option>
+							<option value="http://spyke01.pythonanywhere.com/">Main Server</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<div>
+							<button class="btn btn-primary " name="submit" type="button" onclick="callPython('nonlin')">
+								Non-linear
+							</button>
+
+							<button class="btn btn-primary " name="submit" type="button" onclick="callPython('nonlinold')">
+								Non-linear (old)
+							</button>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<button class="btn btn-primary " name="submit" type="button" onclick="callPython('lin')">
+								Linear
+							</button>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<button class="btn btn-primary " name="submit" type="button" onclick="callPython('linalt')">
+								Linear (Alt)
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="row" id="result">
+		</div>
+	</div>
+</div>
+
+<script>
+	function callPython(callToMake) {
+
+		var oData = {};
+		var query = $('#query').val();
+
+		if (query == '') {
+			alert('Please enter query json data ')
+		}
+		else {
+			oData['query'] = JSON.parse(query);
+		}
+
+		var trainData = $('#trainData').val();
+		if (trainData == '') {
+			alert('Please enter train data ')
+		}
+		else {
+			oData['trainData'] = JSON.parse(trainData);
+		}
+
+		if (query != '' && trainData != '') {
+			var sData = JSON.stringify(oData);
+			$.ajax({
+				type: "POST",
+				url: $('#server').val() + callToMake,
+				data: sData,
+				success: function (obj) {
+					$('#result').html(obj);
+//					var cdata = JSON.parse(JSON.stringify(obj.responseText)).split(":");
+//					var result = cdata[cdata.length - 1].split("}");
+//					alert('Linear :' + result[0]);
+				},
+				error: function (obj) {
+					$('#result').html(obj);
+//					var cdata = JSON.parse(JSON.stringify(obj.responseText)).split(":");
+//					var result = cdata[cdata.length - 1].split("}");
+//					alert('Linear :' + result[0]);
+				},
+				//dataType: "json",
+				contentType: "application/json"
+			});
+		}
+	}
+</script>
+</body>
+</html>
